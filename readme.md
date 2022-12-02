@@ -12,3 +12,5 @@ Lancement du run.py avec en argument le nom de la cam
 Stockage des detections dans dataframe avec colonnes (Time, Nom de la cam, type de détections)
 
 Capture des vidéos dès detections dans <i>/videos </i>
+
+Fichier log: detectionHumans.log
