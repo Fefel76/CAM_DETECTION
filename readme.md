@@ -5,6 +5,7 @@ JSON avec clé le nom de la cam et valeur l'URL
 <H2> Lancement du programe </H2> 
 Lancement du run.py avec en argument le nom de la cam
 1 script - 1 cam
+==> cf fichier Dockerfile
 
 <H2> Algorithme </H2> 
 2 algo Machine Learning utilisés HOG pour détecter le corps humain et HAAS Cascade pour le visage humain
