@@ -8,7 +8,6 @@ RUN git clone https://github.com/Fefel76/reconnaissanceVideo.git
 
 WORKDIR reconnaissanceVideo
 
-RUN pip3 freeze > requirements.txt
 RUN pip3 install -r requirements.txt
 
 RUN ls -ltr
