@@ -1,6 +1,6 @@
 FROM python:3
 
-WORKDIR reconnaissanceVideo
+WORKDIR app
 
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6  -y
@@ -15,4 +15,5 @@ RUN pip3 install -r requirements.txt
 
 RUN ls -ltr
 
-CMD [ "python3", "run.py" , "salon"]
+CMD ["/bin/bash/"]
+#CMD [ "python3", "run.py" , "salon"]
