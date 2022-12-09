@@ -7,7 +7,7 @@ RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 RUN apt install -y git
 
-ENV USER=docker
+ENV USER=myuser
 ENV UID=12345
 ENV GID=23456
 RUN adduser --disabled-password --ingroup "$USER" --no-create-home --uid "$UID" "$USER"
