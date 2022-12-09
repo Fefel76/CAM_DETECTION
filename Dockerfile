@@ -12,4 +12,4 @@ RUN pip3 install -r requirements.txt
 
 RUN ls -ltr
 
-CMD [ "python3", "./reconnaissanceVideo/run.py" , "salon"]
+CMD [ "python3", "run.py" , "salon"]
