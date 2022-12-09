@@ -17,6 +17,6 @@ RUN source env/bin/activate
 
 RUN pip3 install -r ./requirements.txt
 
-CMD ["ls","-ltr"]
+RUN ls -ltr
 
 CMD [ "python3", "run.py" , "salon"]
