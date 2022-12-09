@@ -10,11 +10,6 @@ RUN git clone https://github.com/Fefel76/reconnaissanceVideo.git
 
 COPY . .
 
-RUN python3 -m pip install virtualenv
-RUN python3 -m venv env
-RUN source env/bin/activate
-
-RUN pip3 freeze > requirements.txt
 RUN pip3 install -r requirements.txt
 
 RUN ls -ltr
