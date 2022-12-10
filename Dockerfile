@@ -9,6 +9,8 @@ RUN git clone https://github.com/Fefel76/reconnaissanceVideo.git
 WORKDIR reconnaissanceVideo
 
 USER user
+RUN chown -R user reconnaissanceVideo
+
 RUN pip3 install -r requirements.txt
 
 RUN mkdir ./videos
