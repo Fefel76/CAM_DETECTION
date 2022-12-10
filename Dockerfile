@@ -14,4 +14,8 @@ RUN mkdir ./videos
 RUN mkdir ./log
 RUN ls -ltr
 
+ENV CAM_VISU False
+ENV CAM_RECORD False
+
+
 CMD [ "python3", "run.py" , "salon"]
