@@ -3,7 +3,8 @@ FROM python:3
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 RUN apt install -y git
-
+RUN groupadd -r user && useradd -r -g user user
+USER user
 RUN git clone https://github.com/Fefel76/reconnaissanceVideo.git
 
 WORKDIR reconnaissanceVideo
