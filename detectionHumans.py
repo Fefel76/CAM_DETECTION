@@ -5,7 +5,7 @@ import logging
 import pandas as pd
 import smtplib
 
-logging.basicConfig(filename='detectionHumans.log',level=logging.DEBUG,format='%(asctime)s -- %(funcName)s -- %(process)d -- %(levelname)s -- %(message)s')
+logging.basicConfig(filename='./log/detectionHumans.log',level=logging.DEBUG,format='%(asctime)s -- %(funcName)s -- %(process)d -- %(levelname)s -- %(message)s')
 
 def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu= True, record = True, freq_delay=0.3):
     """
