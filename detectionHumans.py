@@ -73,7 +73,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
 
 
         # Display the resulting frame
-        if visu:
+        #if visu:
             #cv2.imshow('frame', frame)
 
         if cv2.waitKey(int(1000 / fps)) == ord('q'):
