@@ -12,7 +12,7 @@ Lancement du run.py avec en argument le nom de la cam
 1 script - 1 cam
 ==> cf fichier Dockerfile
 <h3>BUILD IMAGE et VOLUME</h3>
-sudo docker build http://github.com/Fefel76/reconnaissanceVideo.git -t recolog --no-cache
+sudo docker build http://github.com/Fefel76/reconnaissanceVideo.git --build-arg pwd='pwd123',login='login123' -t recolog --no-cache
 sudo docker volume create videos  
 sudo docker volume create log
 <h3>RUN CONTAINER</h3>
