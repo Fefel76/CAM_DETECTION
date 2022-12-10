@@ -32,7 +32,8 @@ def init_config():
     if len(sys.argv) > 1:    # récup de l'argument pour selectionner la caméra (config du fichier)
         name = sys.argv[1]
         url = d[name]
-        print(name,url)
+        url='rtsp: //'+login+':'+pwd+'@'+url
+
 
     return url, name, visu, fps, record
 

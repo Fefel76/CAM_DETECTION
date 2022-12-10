@@ -12,11 +12,11 @@ Lancement du run.py avec en argument le nom de la cam
 1 script - 1 cam
 ==> cf fichier Dockerfile
 <h3>BUILD IMAGE et VOLUME</h3>
-sudo docker build http://github.com/Fefel76/reconnaissanceVideo.git --build-arg pwd='pwd123',login='login123' -t recolog --no-cache
+sudo docker build http://github.com/Fefel76/reconnaissanceVideo.git --build-arg pwd='pwd123' --build-arg login='login123' -t recolog --no-cache
 sudo docker volume create videos  
 sudo docker volume create log
 <h3>RUN CONTAINER</h3>
-sudo docker run -e pwd -v videos:/videos -v log:/log -d --restart=unless-stopped recolog 
+sudo docker run -v videos:/videos -v log:/log -d --restart=unless-stopped recolog 
 
 <H2> Algorithme </H2> 
 2 algo Machine Learning utilisés HOG pour détecter le corps humain et HAAS Cascade pour le visage humain
