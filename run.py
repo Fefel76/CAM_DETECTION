@@ -26,18 +26,12 @@ def init_config():
     login = os.environ.get('CAM_LOGIN', "no_log")
     pwd= os.environ.get('CAM_PWD',"no_pass")
 
-    print("Variables d'environnement visu , record , login et pwd", visu, record,login, pwd)
-
-
     if len(sys.argv) > 1:    # récup de l'argument pour selectionner la caméra (config du fichier)
         name = sys.argv[1]
         url = d[name]
         url='rtsp://'+login+':'+pwd+'@'+url
 
-
     return url, name, visu, fps, record
-
-
 
     # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
