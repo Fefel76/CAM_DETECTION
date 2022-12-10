@@ -18,5 +18,7 @@ ENV CAM_VISU False
 ENV CAM_RECORD False
 ARG pwd
 ENV CAM_PWD=${pwd}
+ARG login
+ENV CAM_login=${login}
 
 CMD [ "python3", "run.py" , "salon"]
