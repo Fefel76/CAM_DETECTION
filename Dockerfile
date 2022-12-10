@@ -1,8 +1,8 @@
 FROM python:3
 
-#RUN apt-get update
-#RUN apt-get install ffmpeg libsm6 libxext6  -y
-#RUN apt install -y git
+RUN apt-get update
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+RUN apt install -y git
 
 RUN git clone https://github.com/Fefel76/reconnaissanceVideo.git
 WORKDIR reconnaissanceVideo
@@ -12,7 +12,7 @@ RUN mkdir ./videos
 RUN mkdir ./log
 
 RUN groupadd -r user && useradd -r -g user user
-RUN chown -R user *
+RUN chown -R user:user *
 USER user
 RUN ls -ltr
 
