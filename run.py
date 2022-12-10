@@ -21,10 +21,12 @@ def init_config():
     d = ast.literal_eval(contenu) # conversion en dictionnaire
 
     # Variable d'environnement
-    visu=os.environ.get('CAM_VISU',visu)
+    visu=os.environ.get('CAM_VISU', visu)
     record = os.environ.get('CAM_RECORD', record)
+    pwd= os.environ.get('CAM_PWD',"no_pass")
 
-    print("Variables d'environnement visu et record", visu, record)
+    print("Variables d'environnement visu , record et pwd", visu, record,pwd)
+
 
     if len(sys.argv) > 1:    # récup de l'argument pour selectionner la caméra (config du fichier)
         name = sys.argv[1]

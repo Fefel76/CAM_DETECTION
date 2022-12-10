@@ -16,6 +16,7 @@ RUN ls -ltr
 
 ENV CAM_VISU False
 ENV CAM_RECORD False
-
+ARG pwd
+ENV CAM_PWD=$(pwd)
 
 CMD [ "python3", "run.py" , "salon"]
