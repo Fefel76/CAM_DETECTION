@@ -7,7 +7,7 @@ import smtplib
 
 logging.basicConfig(filename='./log/detectionHumans.log',level=logging.DEBUG,format='%(asctime)s -- %(funcName)s -- %(process)d -- %(levelname)s -- %(message)s')
 
-def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu= True, record = True, freq_delay=0.3):
+def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu= False, record = False, freq_delay=0.3):
     """
     Scrute un flux vidéo pour réaliser une détection , enregistrer et visualiser
     :param src: 0 par défaut pour la webcam sinon adresse rstp://login:mdp@IP
@@ -74,6 +74,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu= True, record
 
         # Display the resulting frame
         if visu:
+            print("VISU")
             cv2.imshow('frame', frame)
 
         if cv2.waitKey(int(1000 / fps)) == ord('q'):
