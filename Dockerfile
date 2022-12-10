@@ -8,8 +8,8 @@ RUN groupadd -r user && useradd -r -g user user
 RUN git clone https://github.com/Fefel76/reconnaissanceVideo.git
 WORKDIR reconnaissanceVideo
 
-USER user
 RUN chown -R user *
+USER user
 
 RUN pip3 install -r requirements.txt
 
