@@ -8,7 +8,7 @@ Lancement du run.py avec en argument le nom de la cam
 ==> cf fichier Dockerfile
 
 sudo docker build @gitclone -t reco --no-cache
-sudo docker run -d -v capture -e pwd --restart=unless-stopped  
+sudo docker run -d --mount source=capture,target=/videos -e pwd --restart=unless-stopped  
 
 <H2> Algorithme </H2> 
 2 algo Machine Learning utilisés HOG pour détecter le corps humain et HAAS Cascade pour le visage humain

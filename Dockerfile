@@ -10,6 +10,8 @@ WORKDIR reconnaissanceVideo
 
 RUN pip3 install -r requirements.txt
 
+RUN mkdir ./videos
+RUN mkdir ./log
 RUN ls -ltr
 
 CMD [ "python3", "run.py" , "salon"]
