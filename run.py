@@ -21,7 +21,7 @@ def init_config():
     d = ast.literal_eval(contenu) # conversion en dictionnaire
 
     # Récupération des variable d'environnement
-    visu=os.environ.get('CAM_VISU', visu)
+    visu= os.environ.get('CAM_VISU', visu)
     record = os.environ.get('CAM_RECORD', record)
     login = os.environ.get('CAM_LOGIN', "no_log")
     pwd= os.environ.get('CAM_PWD',"no_pass")

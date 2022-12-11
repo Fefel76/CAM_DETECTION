@@ -19,7 +19,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
     :param freq_detect: analyse toutes les images à la fréquence indiquée
     :return: N/A
     """
-    print("controle : src,  name,  visu, record == ", src, name, visu, record)
+    print("controle : src,  name,  visu, record , type visu== ", src, name, visu, record, type(visu))
     os.environ['OPENCV_FFMPEG_CAPTURE_OPTIONS'] = 'rtsp_transport;udp'
 
     if src != 0:
