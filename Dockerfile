@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.8.16-slim
 
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6  -y
