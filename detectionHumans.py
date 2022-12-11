@@ -62,7 +62,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
             t = time.time()
             if (humains+visages)>0:
                 #logging.info("Detection : "+humains+visages)
-                if record:
+                if record=="True":
                     photo(frame=frame, name=name)  # sauvegarde sur disque de la photo
                     #capture(cap=cap,frame=frame, name=name, t_capture=time.time(), fps=fps,width=width, height=height)
 
@@ -73,8 +73,8 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
 
 
         # Display the resulting frame
-        #if visu:
-            #cv2.imshow('frame', frame)
+        if visu=="True":
+            cv2.imshow('frame', frame)
 
         if cv2.waitKey(int(1000 / fps)) == ord('q'):
             break

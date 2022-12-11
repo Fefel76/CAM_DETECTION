@@ -12,8 +12,8 @@ def init_config():
     config=configparser.ConfigParser()
     url = 0  # par défaut , canal 0 de la webcam
     name = 'CAM'
-    visu = True
-    record = True
+    visu = "True"
+    record = "True"
     fps = 45
     file="cam.conf"
     lire = open(file, 'r')
