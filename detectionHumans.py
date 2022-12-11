@@ -57,30 +57,29 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
             logging.error(name + " : Erreur de récupération du flux")
             break
 
-        if time.time()-t>freq_delay:    # régulation des détections tous les freq_delay
+        # régulation des détections tous les freq_delay
+        if time.time()-t>freq_delay:
             humains, visages = detection(frame)
             t = time.time()
-            if (humains+visages)>0:
-                #logging.info("Detection : "+humains+visages)
-                if record=="True":
+            if (humains+visages)>0: #Détection identifiée
+
+                if record=="True": #Enregistrement de l'image
                     photo(frame=frame, name=name)  # sauvegarde sur disque de la photo
                     #capture(cap=cap,frame=frame, name=name, t_capture=time.time(), fps=fps,width=width, height=height)
 
+                # Traçage dans un excel l'heure et la date
                 a = pd.DataFrame({"Nom": [name], "ID": [time.time()], "Time": [time.strftime("%d/%m/%y %H:%M:%S")],"Humains": [humains], "Visages": [visages]})
                 #alertes=pd.concat([a,alertes],ignore_index=True)
-
                 a.to_csv('./videos/alertes_'+name+'.csv', mode='a', index=False, header=False, encoding='utf-8')
 
 
-        # Display the resulting frame
+        #Affichage de l'image
         if visu=="True":
             cv2.imshow('frame', frame)
 
         if cv2.waitKey(int(1000 / fps)) == ord('q'):
             break
-    # When everything done, release the capture
-
-
+    # Fin de la boucle infinie ==> libération des ressources CV
     cap.release()
     cv2.destroyAllWindows()
 
