@@ -7,3 +7,5 @@ if len(sys.argv) > 1:  # récup de l'argument pour selectionner la caméra (conf
         pickle.dump("True", open("./videos/record.txt", "wb"))
     if commande == 'off':
         pickle.dump("False", open("./videos/record.txt", "wb"))
+
+    print("Commande reçu:", commande)
