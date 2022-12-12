@@ -60,18 +60,17 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
         # régulation des détections tous les freq_delay
         if time.time()-t>freq_delay:
             record = is_record()  # mise à jour des param <> interactions
-            humains, visages = detection(frame)
-            t = time.time()
-            if (humains+visages)>0: #Détection identifiée
-
-                if record=="True": #Enregistrement de l'image
+            if record == "True":  # Enregistrement de l'image
+                humains, visages = detection(frame)
+                t = time.time()
+                if (humains+visages)>0: #Détection identifiée
                     photo(frame=frame, name=name)  # sauvegarde sur disque de la photo
                     #capture(cap=cap,frame=frame, name=name, t_capture=time.time(), fps=fps,width=width, height=height)
 
-                # Traçage dans un excel l'heure et la date
-                a = pd.DataFrame({"Nom": [name], "ID": [time.time()], "Time": [time.strftime("%d/%m/%y %H:%M:%S")],"Humains": [humains], "Visages": [visages]})
-                #alertes=pd.concat([a,alertes],ignore_index=True)
-                a.to_csv('./videos/alertes_'+name+'.csv', mode='a', index=False, header=False, encoding='utf-8')
+                    # Traçage dans un excel l'heure et la date
+                    a = pd.DataFrame({"Nom": [name], "ID": [time.time()], "Time": [time.strftime("%d/%m/%y %H:%M:%S")],"Humains": [humains], "Visages": [visages]})
+                    #alertes=pd.concat([a,alertes],ignore_index=True)
+                    a.to_csv('./videos/alertes_'+name+'.csv', mode='a', index=False, header=False, encoding='utf-8')
 
 
         #Affichage de l'image
