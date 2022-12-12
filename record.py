@@ -1,4 +1,5 @@
 import pickle
+import sys
 
 if len(sys.argv) > 1:  # récup de l'argument pour selectionner la caméra (config du fichier)
     commande = sys.argv[1]

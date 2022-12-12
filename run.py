@@ -37,10 +37,7 @@ def init_config():
     # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     src, name, visu, fps, record= init_config()
-
     pickle.dump(record, open("./videos/record.txt", "wb"))  #activation record
-
-
     scanCAM(src=src, name=name, visu=visu, fps=fps, record=record)
 
 
