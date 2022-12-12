@@ -119,7 +119,7 @@ def photo(frame,name):
     except:
         logging.error(name + ': Erreur pour ouvrir le fichier de sauvegarde')
 
-    #pickle.dump("False", open("record.txt", "wb"))
+
 
 
 
@@ -222,9 +222,8 @@ def detection_body_HAAS(frame):
 """
 
 def is_record():
-    with open('record.txt', 'rb') as f:
+    with open('./videos/record.txt', 'rb') as f:
         record = pickle.load(f)
-
 
     return record
 

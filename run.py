@@ -38,7 +38,7 @@ def init_config():
 if __name__ == '__main__':
     src, name, visu, fps, record= init_config()
 
-    pickle.dump(record, open("record.txt", "wb"))  #activation record
+    pickle.dump(record, open("./videos/record.txt", "wb"))  #activation record
 
 
     scanCAM(src=src, name=name, visu=visu, fps=fps, record=record)
