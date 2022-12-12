@@ -16,7 +16,7 @@ sudo docker build http://github.com/Fefel76/reconnaissanceVideo.git --build-arg 
 sudo docker volume create videos  
 sudo docker volume create log
 <h3>RUN CONTAINER</h3>
-sudo docker run -v videos:/videos -v log:/log -d --restart=unless-stopped recolog 
+sudo docker run -v videos:/reconnaissanceVideo/videos -v log:/reconnaissanceVideo//log -d --restart=unless-stopped recolog 
 
 <H2> Algorithme </H2> 
 2 algo Machine Learning utilisés HOG pour détecter le corps humain et HAAS Cascade pour le visage humain

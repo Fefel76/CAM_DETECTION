@@ -4,6 +4,7 @@ import time
 import logging
 import pandas as pd
 import smtplib
+import pickle
 
 logging.basicConfig(filename='./log/detectionHumans.log',level=logging.DEBUG,format='%(asctime)s -- %(funcName)s -- %(process)d -- %(levelname)s -- %(message)s')
 
@@ -19,9 +20,10 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
     :param freq_detect: analyse toutes les images à la fréquence indiquée
     :return: N/A
     """
-    print("controle : src,  name,  visu, record , type visu & record == ", src, name, visu, record, type(visu), type(record))
+
+
     os.environ['OPENCV_FFMPEG_CAPTURE_OPTIONS'] = 'rtsp_transport;udp'
-    logging.info("Début détection sur la caméra: "+name+" et Activation RECORD:"+record)
+    logging.info("Début détection sur la caméra: "+name)
     if src != 0:
         cap = cv2.VideoCapture(src, cv2.CAP_FFMPEG)
     else:
@@ -37,8 +39,6 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
     width= cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     height=cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
     print("Taille (W,H): ",width,height)
-
-    logging.info(name + " : Scan démarré ")
 
     t=time.time()  # compteur de trames
     alertes=pd.DataFrame(columns=("Time","Humains", "Visages")) # Historisation des detections pour remonter les alertes
@@ -59,6 +59,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
 
         # régulation des détections tous les freq_delay
         if time.time()-t>freq_delay:
+            record = is_record()  # mise à jour des param <> interactions
             humains, visages = detection(frame)
             t = time.time()
             if (humains+visages)>0: #Détection identifiée
@@ -109,12 +110,17 @@ def photo(frame,name):
     :param name: nom de la caméra
     :return:
     """
+
     file = "./videos/" + name + "_" + time.strftime("%d-%b-%Y_%HH%Mm%Ss") + '.jpg'
     try:
         cv2.imwrite(file, frame)
         logging.info(name + ": Enregistrement de la photo " + file)
+        print('Photo !')
     except:
         logging.error(name + ': Erreur pour ouvrir le fichier de sauvegarde')
+
+    #pickle.dump("False", open("record.txt", "wb"))
+
 
 
 def capture(cap, frame, name, t_capture, d_capture=1, width=640, height=480, fps=15):
@@ -215,5 +221,10 @@ def detection_body_HAAS(frame):
 
 """
 
+def is_record():
+    with open('record.txt', 'rb') as f:
+        record = pickle.load(f)
 
+
+    return record
 
