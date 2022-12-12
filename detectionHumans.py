@@ -21,7 +21,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
     """
     print("controle : src,  name,  visu, record , type visu & record == ", src, name, visu, record, type(visu), type(record))
     os.environ['OPENCV_FFMPEG_CAPTURE_OPTIONS'] = 'rtsp_transport;udp'
-
+    logging.info("Début détection sur la caméra: "+name+" et Activation RECORD:"+record)
     if src != 0:
         cap = cv2.VideoCapture(src, cv2.CAP_FFMPEG)
     else:
