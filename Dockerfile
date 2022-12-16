@@ -17,7 +17,7 @@ USER user
 RUN ls -ltr
 
 ENV CAM_VISU False
-ENV CAM_RECORD True
+ENV CAM_RECORD on
 ARG pwd
 ENV CAM_PWD=${pwd}
 ARG login

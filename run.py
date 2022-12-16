@@ -14,7 +14,7 @@ def init_config():
     url = 0  # par défaut , canal 0 de la webcam
     name = 'CAM'
     visu = "True"
-    record = "True"
+    record = "on"
     fps = 45
     file="cam.conf"
     lire = open(file, 'r')

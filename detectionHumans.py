@@ -8,7 +8,7 @@ import pickle
 
 logging.basicConfig(filename='./log/detectionHumans.log',level=logging.DEBUG,format='%(asctime)s -- %(funcName)s -- %(process)d -- %(levelname)s -- %(message)s')
 
-def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record=False, freq_delay=0.3):
+def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record="on", freq_delay=0.3):
     """
     Scrute un flux vidéo pour réaliser une détection , enregistrer et visualiser
     :param src: 0 par défaut pour la webcam sinon adresse rstp://login:mdp@IP
@@ -60,7 +60,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
         # régulation des détections tous les freq_delay
         if time.time()-t>freq_delay:
             record = is_record()  # mise à jour des param <> interactions
-            if record == "True":  # Enregistrement de l'image
+            if record == "on":  # Enregistrement de l'image
                 humains, visages = detection(frame)
                 t = time.time()
                 if (humains+visages)>0: #Détection identifiée
