@@ -2,13 +2,16 @@ import cv2
 import os
 import time
 import logging
+import numpy as np
+
+import imutils
 import pandas as pd
 import smtplib
 import pickle
 
 logging.basicConfig(filename='./log/detectionHumans.log',level=logging.DEBUG,format='%(asctime)s -- %(funcName)s -- %(process)d -- %(levelname)s -- %(message)s')
 
-def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record="on", freq_delay=0.3):
+def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record="on", freq_delay=0.3, seuil=5):
     """
     Scrute un flux vidéo pour réaliser une détection , enregistrer et visualiser
     :param src: 0 par défaut pour la webcam sinon adresse rstp://login:mdp@IP
@@ -41,36 +44,38 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
     print("Taille (W,H): ",width,height)
 
     t=time.time()  # compteur de trames
-    alertes=pd.DataFrame(columns=("Time","Humains", "Visages")) # Historisation des detections pour remonter les alertes
+
 
 
     while True:
 
         # itération par image capturée
-        try:
-            ret, frame = cap.read()
-            if not ret:
-                logging.error(name + " : Erreur dans la lecture du stream..." + ret)
-                break
-        except:
+        frame1 = read_frame(cap,name)
+        frame2 = read_frame(cap,name)
+        frame=frame1.copy()
 
-            logging.error(name + " : Erreur de récupération du flux")
-            break
 
         # régulation des détections tous les freq_delay
         if time.time()-t>freq_delay:
-            record = is_record()  # mise à jour des param <> interactions
+            record = is_record()  # répérer variable record on/off
+
+
+            #cv2.imshow('diff', frame_diff)
+
             if record == "on":  # Enregistrement de l'image
                 humains, visages = detection(frame)
                 t = time.time()
                 if (humains+visages)>0: #Détection identifiée
                     photo(frame=frame, name=name)  # sauvegarde sur disque de la photo
                     #capture(cap=cap,frame=frame, name=name, t_capture=time.time(), fps=fps,width=width, height=height)
+                    # Comparaison avec image précédente
+                    blocs = diff_frame(frame1, frame2)
+                    print(time.strftime("%d/%m/%y %H:%M:%S"), blocs)
 
                     # Traçage dans un excel l'heure et la date
-                    a = pd.DataFrame({"Nom": [name], "ID": [time.time()], "Time": [time.strftime("%d/%m/%y %H:%M:%S")],"Humains": [humains], "Visages": [visages]})
-                    #alertes=pd.concat([a,alertes],ignore_index=True)
+                    a = pd.DataFrame({"Nom": [name], "ID": [time.time()], "Time": [time.strftime("%d/%m/%y %H:%M:%S")],"Humains": [humains], "Visages": [visages], "Blocs":blocs})
                     a.to_csv('./videos/alertes_'+name+'.csv', mode='a', index=False, header=False, encoding='utf-8')
+
 
 
         #Affichage de l'image
@@ -94,6 +99,7 @@ def detection(frame,detections=0, face=False):
     :return: nombre d'humains et visages
     """
 
+
     # Traitement de l'image récupérée
     t=time.time()
     frame, detections = detectionHOG(frame)  # detection HOG
@@ -114,11 +120,9 @@ def photo(frame,name):
     try:
         cv2.imwrite(file, frame)
         logging.info(name + ": Enregistrement de la photo " + file)
-        print('Photo !')
+        print(time.strftime("%d/%m/%y %H:%M:%S"),'Photo !')
     except:
         logging.error(name + ': Erreur pour ouvrir le fichier de sauvegarde')
-
-
 
 
 
@@ -173,7 +177,7 @@ def detectionHOG(frame, winStride=(8,8), padding=(3,3), scale=1.21):
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
      #Optimisation de la détection
-    winStride = (8, 8)
+    winStride = (4, 4)
     padding = (4, 4)
     scale = 1.1
 
@@ -225,4 +229,42 @@ def is_record():
         record = pickle.load(f)
 
     return record
+
+def diff_frame(frame1,frame2,decoupe=10, seuil=10):
+    c=0
+    diff = frame1.copy()
+    cv2.absdiff(frame1, frame2, diff)
+
+    # converting the difference into grayscale images
+    gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+
+    # increasing the size of differences after that we can capture them all
+    for i in range(0, 3):
+        dilated = cv2.dilate(gray.copy(), None, iterations=i + 1)
+
+    split= np.array_split(dilated, decoupe, axis=0)
+
+    for i in range(0, decoupe):
+        s=np.array_split(split[i],decoupe, axis=1)
+        for j in range(0,decoupe):
+            if s[j].mean()>seuil:
+                c+=1
+
+    return c
+
+
+def read_frame(cap,name):
+    # itération par image capturée
+    try:
+        ret, frame = cap.read()
+        if not ret:
+            logging.error(name + " : Erreur dans la lecture du stream..." + ret)
+
+
+    except:
+
+        logging.error(name + " : Erreur de récupération du flux")
+
+
+    return frame
 
