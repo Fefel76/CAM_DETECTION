@@ -224,9 +224,13 @@ def detection_body_HAAS(frame):
 
 """
 
-def is_record():
-    with open('./videos/record.txt', 'rb') as f:
-        record = pickle.load(f)
+def is_record(record="on"):
+
+    try:
+        with open('./videos/record.txt', 'rb') as f:
+            record = pickle.load(f)
+    except:
+        pickle.dump(record, open("./videos/record.txt", "wb"))  # activation record
 
     return record
 
