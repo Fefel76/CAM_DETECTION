@@ -10,6 +10,7 @@ WORKDIR CAM_DETECTION
 RUN pip3 install -r requirements.txt
 RUN mkdir ./videos
 RUN mkdir ./log
+RUN mkdir ./conf
 
 RUN groupadd -r user && useradd -r -g user user
 RUN chown -R user:user *

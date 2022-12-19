@@ -39,6 +39,7 @@ if __name__ == '__main__':
     visu="on"
     record="on"
     pickle.dump(record, open("./videos/record.txt", "wb"))  #activation record
+
     scanCAM(src=src, name=name, visu=visu, fps=fps, record=record)
 
 

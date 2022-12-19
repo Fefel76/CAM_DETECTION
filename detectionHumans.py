@@ -12,6 +12,8 @@ from ComSMS import *
 
 logging.basicConfig(filename='./log/detectionHumans.log',level=logging.DEBUG,format='%(asctime)s -- %(funcName)s -- %(process)d -- %(levelname)s -- %(message)s')
 
+
+
 def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record="on", freq_delay=0.3, seuil=5):
     """
     Scrute un flux vidéo pour réaliser une détection , enregistrer et visualiser
@@ -46,7 +48,10 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
 
     t=time.time()  # compteur de trames
 
+    decoupe, seuil_diff, winStride, padding, scale = init_param()
+
     while True:
+
 
         # itération par image capturée
         frame1 = read_frame(cap,name)
@@ -59,8 +64,9 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
             record = is_record()  # répérer variable record on/off
 
             if record == "on":  # Enregistrement de l'image
-                blocs = diff_frame(frame1, frame2,visu=visu)  # Comparaison avec image précédente (nb de bloc différents)
-                humains, visages = detection(frame)
+                blocs = diff_frame(frame1, frame2,visu=visu, name=name, decoupe=decoupe,seuil=seuil_diff)  # Comparaison avec image précédente (nb de bloc différents)
+                frame, humains = detectionHOG(frame,winStride=winStride,padding=padding,scale=scale)  # detection HOG
+                frame, visages = detection_face_HAAS(frame)  # detection HAAS Face
                 t = time.time()
 
                 if (humains+visages)>0 and blocs>seuil: #Détection identifiée
@@ -75,7 +81,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
 
         #Affichage de l'image
         if visu=="on":
-            cv2.imshow('frame', frame)
+            cv2.imshow(name, frame)
 
         if cv2.waitKey(int(1000 / fps)) == ord('q'):
             break
@@ -84,24 +90,6 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
     cv2.destroyAllWindows()
 
 
-
-def detection(frame,detections=0, face=False):
-    """
-    Analyse une image pour déterminer si il y a un corps
-    :param frame: image à analyser
-    :param detections: nombre d'humain détectés
-    :param face: nombre de visage
-    :return: nombre d'humains et visages
-    """
-
-
-    # Traitement de l'image récupérée
-    t=time.time()
-    frame, detections = detectionHOG(frame)  # detection HOG
-    frame, face = detection_face_HAAS(frame)  # detection HAAS Face
-    #print("Perf detection = ", time.time()-t, detections, face)
-
-    return detections, face
 
 def photo(frame,name):
     """
@@ -229,7 +217,7 @@ def is_record(record="on"):
 
     return record
 
-def diff_frame(frame1,frame2,decoupe=10, seuil=5, visu="False"):
+def diff_frame(frame1,frame2,decoupe=10, seuil=10, visu="off", name="cam"):
     c=0
     diff = frame1.copy()
     cv2.absdiff(frame1, frame2, diff)
@@ -241,8 +229,8 @@ def diff_frame(frame1,frame2,decoupe=10, seuil=5, visu="False"):
     for i in range(0, 3):
         dilated = cv2.dilate(gray.copy(), None, iterations=i + 1)
 
-    if visu=="True":
-        cv2.imshow('diff', dilated)
+    if visu=="on":
+        cv2.imshow(name, dilated)
     split= np.array_split(dilated, decoupe, axis=0)
 
     for i in range(0, decoupe):
@@ -268,4 +256,40 @@ def read_frame(cap,name):
 
 
     return frame
+
+def init_param(decoupe=10,seuil_diff=10,winStride = (4, 4),padding = (4, 4), scale = 1.1):
+    try:
+        with open('./conf/decoupe.txt', 'rb') as f:
+            decoupe = pickle.load(f)
+    except:
+        pickle.dump(decoupe, open("./conf/decoupe.txt", "wb"))
+
+    try:
+        with open('./conf/seuil_diff.txt', 'rb') as f:
+            seuil_diff = pickle.load(f)
+    except:
+        pickle.dump(seuil_diff, open("./conf/seuil_diff.txt", "wb"))
+
+    try:
+        with open('./conf/winStride.txt', 'rb') as f:
+            winStride = pickle.load(f)
+    except:
+        pickle.dump(winStride, open("./conf/winStride.txt", "wb"))
+
+    try:
+        with open('./conf/padding.txt', 'rb') as f:
+            padding = pickle.load(f)
+    except:
+        pickle.dump(padding, open("./conf/padding.txt", "wb"))
+
+    try:
+        with open('./conf/scale.txt', 'rb') as f:
+            scale = pickle.load(f)
+    except:
+        pickle.dump(scale, open("./conf/scale.txt", "wb"))
+
+
+
+    return decoupe, seuil_diff, winStride, padding, scale
+
 
