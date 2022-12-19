@@ -60,21 +60,22 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
             record = is_record()  # répérer variable record on/off
 
 
-            #cv2.imshow('diff', frame_diff)
+
 
             if record == "on":  # Enregistrement de l'image
                 humains, visages = detection(frame)
                 t = time.time()
                 if (humains+visages)>0: #Détection identifiée
-                    photo(frame=frame, name=name)  # sauvegarde sur disque de la photo
-                    #capture(cap=cap,frame=frame, name=name, t_capture=time.time(), fps=fps,width=width, height=height)
-                    # Comparaison avec image précédente
-                    blocs = diff_frame(frame1, frame2)
-                    print(time.strftime("%d/%m/%y %H:%M:%S"), blocs)
+                    blocs = diff_frame(frame1, frame2) # Comparaison avec image précédente (nb de bloc différents)
 
-                    # Traçage dans un excel l'heure et la date
-                    a = pd.DataFrame({"Nom": [name], "ID": [time.time()], "Time": [time.strftime("%d/%m/%y %H:%M:%S")],"Humains": [humains], "Visages": [visages], "Blocs":blocs})
-                    a.to_csv('./videos/alertes_'+name+'.csv', mode='a', index=False, header=False, encoding='utf-8')
+
+                    print(time.strftime("%d/%m/%y %H:%M:%S"), 'Détections HVB', humains, visages, blocs)
+
+                    if blocs>seuil:
+                        photo(frame=frame, name=name)  # sauvegarde sur disque de la photo
+                        # Traçage dans un excel l'heure et la date
+                        a = pd.DataFrame({"Nom": [name], "ID": [time.time()], "Time": [time.strftime("%d/%m/%y %H:%M:%S")],"Humains": [humains], "Visages": [visages], "Blocs":blocs})
+                        a.to_csv('./videos/alertes_'+name+'.csv', mode='a', index=False, header=False, encoding='utf-8')
 
 
 
@@ -234,7 +235,7 @@ def is_record(record="on"):
 
     return record
 
-def diff_frame(frame1,frame2,decoupe=10, seuil=10):
+def diff_frame(frame1,frame2,decoupe=10, seuil=5):
     c=0
     diff = frame1.copy()
     cv2.absdiff(frame1, frame2, diff)
@@ -246,6 +247,7 @@ def diff_frame(frame1,frame2,decoupe=10, seuil=10):
     for i in range(0, 3):
         dilated = cv2.dilate(gray.copy(), None, iterations=i + 1)
 
+    cv2.imshow('diff', dilated)
     split= np.array_split(dilated, decoupe, axis=0)
 
     for i in range(0, decoupe):

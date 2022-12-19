@@ -24,8 +24,10 @@ def init_config():
     # Récupération des variable d'environnements
     visu= os.environ.get('CAM_VISU', visu)
     record = os.environ.get('CAM_RECORD', record)
+
     login = os.environ.get('CAM_LOGIN', "no_log")
     pwd= os.environ.get('CAM_PWD',"no_pass")
+    print("RECORD", record)
 
     if len(sys.argv) > 1:    # récup de l'argument pour selectionner la caméra (config du fichier)
         name = sys.argv[1]
