@@ -16,7 +16,7 @@ RUN chown -R user:user *
 USER user
 RUN ls -ltr
 
-ENV CAM_VISU False
+ENV CAM_VISU off
 ENV CAM_RECORD on
 ARG pwd
 ENV CAM_PWD=${pwd}

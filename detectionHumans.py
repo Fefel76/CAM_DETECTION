@@ -8,10 +8,11 @@ import imutils
 import pandas as pd
 import smtplib
 import pickle
+from ComSMS import *
 
 logging.basicConfig(filename='./log/detectionHumans.log',level=logging.DEBUG,format='%(asctime)s -- %(funcName)s -- %(process)d -- %(levelname)s -- %(message)s')
 
-def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record="on", freq_delay=0.3, seuil=5):
+def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record="on", freq_delay=0.3, seuil=5):
     """
     Scrute un flux vidéo pour réaliser une détection , enregistrer et visualiser
     :param src: 0 par défaut pour la webcam sinon adresse rstp://login:mdp@IP
@@ -45,8 +46,6 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
 
     t=time.time()  # compteur de trames
 
-
-
     while True:
 
         # itération par image capturée
@@ -59,28 +58,23 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu=False, record
         if time.time()-t>freq_delay:
             record = is_record()  # répérer variable record on/off
 
-
-
-
             if record == "on":  # Enregistrement de l'image
+                blocs = diff_frame(frame1, frame2,visu=visu)  # Comparaison avec image précédente (nb de bloc différents)
                 humains, visages = detection(frame)
                 t = time.time()
-                if (humains+visages)>0: #Détection identifiée
-                    blocs = diff_frame(frame1, frame2) # Comparaison avec image précédente (nb de bloc différents)
 
-
+                if (humains+visages)>0 and blocs>seuil: #Détection identifiée
                     print(time.strftime("%d/%m/%y %H:%M:%S"), 'Détections HVB', humains, visages, blocs)
-
-                    if blocs>seuil:
-                        photo(frame=frame, name=name)  # sauvegarde sur disque de la photo
-                        # Traçage dans un excel l'heure et la date
-                        a = pd.DataFrame({"Nom": [name], "ID": [time.time()], "Time": [time.strftime("%d/%m/%y %H:%M:%S")],"Humains": [humains], "Visages": [visages], "Blocs":blocs})
-                        a.to_csv('./videos/alertes_'+name+'.csv', mode='a', index=False, header=False, encoding='utf-8')
+                    photo(frame=frame, name=name)  # sauvegarde sur disque de la photo
+                    # Traçage dans un excel l'heure et la date
+                    a = pd.DataFrame({"Nom": [name], "ID": [time.time()], "Time": [time.strftime("%d/%m/%y %H:%M:%S")],"Humains": [humains], "Visages": [visages], "Blocs":blocs})
+                    a.to_csv('./videos/alertes_'+name+'.csv', mode='a', index=False, header=False, encoding='utf-8')
+                    #send_sms("Instrusion "+name+" avec niveau de "+ str(blocs))
 
 
 
         #Affichage de l'image
-        if visu=="True":
+        if visu=="on":
             cv2.imshow('frame', frame)
 
         if cv2.waitKey(int(1000 / fps)) == ord('q'):
@@ -235,7 +229,7 @@ def is_record(record="on"):
 
     return record
 
-def diff_frame(frame1,frame2,decoupe=10, seuil=5):
+def diff_frame(frame1,frame2,decoupe=10, seuil=5, visu="False"):
     c=0
     diff = frame1.copy()
     cv2.absdiff(frame1, frame2, diff)
@@ -247,7 +241,8 @@ def diff_frame(frame1,frame2,decoupe=10, seuil=5):
     for i in range(0, 3):
         dilated = cv2.dilate(gray.copy(), None, iterations=i + 1)
 
-    cv2.imshow('diff', dilated)
+    if visu=="True":
+        cv2.imshow('diff', dilated)
     split= np.array_split(dilated, decoupe, axis=0)
 
     for i in range(0, decoupe):
