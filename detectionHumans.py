@@ -6,6 +6,7 @@ import numpy as np
 import imutils
 import pandas as pd
 import smtplib
+#TODO gestion de mails
 import pickle
 from ComSMS import *
 
@@ -45,7 +46,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
     print("Taille (W,H): ",width,height)
 
     t=time.time()  # compteur de trames
-    parametres=read_param()
+    parametres = read_param()
     logging.info("Param:"+str(parametres))
 
     while True:
@@ -62,6 +63,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
             record = is_record()  # répérer variable record on/off
 
             if record == "on":  # Enregistrement de l'image
+                parametres = read_param()
                 blocs = diff_frame(frame1, frame2,visu=visu, name=name, decoupe=int(parametres['decoupe']),seuil=int(parametres['seuil']))  # Comparaison avec image précédente (nb de bloc différents)
                 frame, humains = detectionHOG(frame,ws=int(parametres['winStride']),p=int(parametres['padding']),s=float(parametres['scale']))  # detection HOG
                 frame, visages = detection_face_HAAS(frame)  # detection HAAS Face
