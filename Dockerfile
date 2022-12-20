@@ -1,10 +1,10 @@
 FROM mypython
+
 #FROM python:3.8.16-slim
 #ENV TZ="Europe/Paris"
 #RUN apt-get update
 #RUN apt install -y git
-
-RUN apt-get install ffmpeg libsm6 libxext6  -y
+#RUN apt-get install ffmpeg libsm6 libxext6  -y
 
 RUN git clone https://github.com/Fefel76/CAM_DETECTION.git
 WORKDIR CAM_DETECTION
