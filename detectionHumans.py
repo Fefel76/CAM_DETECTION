@@ -48,6 +48,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
     t=time.time()  # compteur de trames
     parametres=read_param()
 
+    logging.debug(parametres)
     while True:
 
         """ DECLENCHEMENT  SCAN videos """
@@ -62,8 +63,8 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
             record = is_record()  # répérer variable record on/off
 
             if record == "on":  # Enregistrement de l'image
-                blocs = diff_frame(frame1, frame2,visu=visu, name=name, decoupe=parametres['decoupe'],seuil=parametres['seuil'])  # Comparaison avec image précédente (nb de bloc différents)
-                frame, humains = detectionHOG(frame,winStride=parametres['winStride'],padding=parametres['padding'],scale=parametres['scale'])  # detection HOG
+                blocs = diff_frame(frame1, frame2,visu=visu, name=name, decoupe=in(parametres['decoupe']),seuil=int(parametres['seuil']))  # Comparaison avec image précédente (nb de bloc différents)
+                frame, humains = detectionHOG(frame,winStride=int(parametres['winStride']),padding=int(parametres['padding']),scale=float(parametres['scale']))  # detection HOG
                 frame, visages = detection_face_HAAS(frame)  # detection HAAS Face
                 t = time.time()
 
@@ -148,7 +149,7 @@ def capture(cap, frame, name, t_capture, d_capture=1, width=640, height=480, fps
         logging.error(name +':Erreur pour fermer le fichier de sauvegarde')
         return False
 
-def detectionHOG(frame, winStride=(8,8), padding=(3,3), scale=1.21):
+def detectionHOG(frame, ws=8, p=3, s=1.21):
     """
 
     :param frame: image à analyser
@@ -159,9 +160,10 @@ def detectionHOG(frame, winStride=(8,8), padding=(3,3), scale=1.21):
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
      #Optimisation de la détection
-    winStride = (4, 4)
-    padding = (4, 4)
-    scale = 1.1
+    winStride = (ws, ws)
+    padding = (p, p)
+    scale = s
+
 
     (humans, _) = hog.detectMultiScale(gray,winStride=winStride,padding=padding,scale=scale)
 
