@@ -10,14 +10,11 @@ RUN git clone https://github.com/Fefel76/CAM_DETECTION.git
 WORKDIR CAM_DETECTION
 
 RUN pip3 install -r requirements.txt
-RUN mkdir ./videos
-RUN mkdir ./log
-RUN mkdir ./conf
+RUN mkdir ./videos && mkdir ./log mkdir ./conf
 
-RUN groupadd -r user && useradd -r -g user user
-RUN chown -R user:user *
+RUN groupadd -r user && useradd -r -g user user && chown -R user:user *
 USER user
-RUN ls -ltr
+
 
 ENV CAM_VISU off
 ENV CAM_RECORD on

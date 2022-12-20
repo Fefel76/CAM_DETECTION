@@ -38,7 +38,7 @@ if __name__ == '__main__':
     #TODO utilisation de click pour gérer les arguments et options
     src, name, visu, fps, record= init_config()
     #TODO gestion multi record
-    pickle.dump(record, open("./videos/record.txt", "wb"))  # activation record
+    pickle.dump(record, open("./conf/record.txt", "wb"))  # activation record
     scanCAM(src=src, name=name, visu=visu, fps=fps, record=record)
 
 
