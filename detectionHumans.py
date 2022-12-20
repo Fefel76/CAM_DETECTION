@@ -12,7 +12,6 @@ from ComSMS import *
 logging.basicConfig(filename='./log/detectionHumans.log',level=logging.DEBUG,format='%(asctime)s -- %(funcName)s -- %(process)d -- %(levelname)s -- %(message)s')
 
 
-
 def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record="on", freq_delay=0.3, seuil=5):
     """
     Scrute un flux vidéo pour réaliser une détection , enregistrer et visualiser
@@ -93,7 +92,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
 
 def photo(frame,name):
     """
-
+    Stocke la photo dans /videos
     :param frame: image à sauvegarder
     :param name: nom de la caméra
     :return:
@@ -173,7 +172,6 @@ def detectionHOG(frame, ws=8, p=3, s=1.21):
                       (0, 0, 255), 2)
     return frame, len(humans)
 
-
 def detection_face_HAAS(frame):
     """
 
@@ -207,7 +205,7 @@ def detection_body_HAAS(frame):
     return frame
 
 """
-
+#TODO gestion multi record
 def is_record(record="on"):
 
     try:
@@ -244,7 +242,13 @@ def diff_frame(frame1,frame2,decoupe=10, seuil=10, visu="off", name="cam"):
 
 
 def read_frame(cap,name):
-    # itération par image capturée
+    """
+    itération par image capturée
+    :param cap: flux video
+    :param name: nom de la cam
+    :return: image capturée
+    """
+
     try:
         ret, frame = cap.read()
         if not ret:
@@ -259,7 +263,11 @@ def read_frame(cap,name):
     return frame
 
 def read_param(parametres={"decoupe":10,"seuil":10,"winStride":4,"padding":4,"scale":1.1}):
-
+    """
+    lecture des param généraux pour la détection
+    :param parametres: dictionnaire pour découpage blocs et classifier HOG
+    :return: les paramètres
+    """
     try:
         with open('./conf/param.txt', 'rb') as f:
             parametres = pickle.load(f)
