@@ -3,7 +3,6 @@ import os
 import time
 import logging
 import numpy as np
-
 import imutils
 import pandas as pd
 import smtplib
@@ -47,28 +46,28 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
     print("Taille (W,H): ",width,height)
 
     t=time.time()  # compteur de trames
-
-    decoupe, seuil_diff, winStride, padding, scale = init_param()
+    parametres=read_param()
 
     while True:
 
-
+        """ DECLENCHEMENT  SCAN videos """
         # itération par image capturée
         frame1 = read_frame(cap,name)
         frame2 = read_frame(cap,name)
         frame=frame1.copy()
 
-
+        """ DECLENCHEMENT  DETECTION """
         # régulation des détections tous les freq_delay
         if time.time()-t>freq_delay:
             record = is_record()  # répérer variable record on/off
 
             if record == "on":  # Enregistrement de l'image
-                blocs = diff_frame(frame1, frame2,visu=visu, name=name, decoupe=decoupe,seuil=seuil_diff)  # Comparaison avec image précédente (nb de bloc différents)
-                frame, humains = detectionHOG(frame,winStride=winStride,padding=padding,scale=scale)  # detection HOG
+                blocs = diff_frame(frame1, frame2,visu=visu, name=name, decoupe=parametres['decoupe'],seuil=parametres['seuil'])  # Comparaison avec image précédente (nb de bloc différents)
+                frame, humains = detectionHOG(frame,winStride=parametres['winStride'],padding=parametres['padding'],scale=parametres['scale'])  # detection HOG
                 frame, visages = detection_face_HAAS(frame)  # detection HAAS Face
                 t = time.time()
 
+                """ DECLENCHEMENT  ALERTE """
                 if (humains+visages)>0 and blocs>seuil: #Détection identifiée
                     print(time.strftime("%d/%m/%y %H:%M:%S"), 'Détections HVB', humains, visages, blocs)
                     photo(frame=frame, name=name)  # sauvegarde sur disque de la photo
@@ -257,39 +256,14 @@ def read_frame(cap,name):
 
     return frame
 
-def init_param(decoupe=10,seuil_diff=10,winStride = (4, 4),padding = (4, 4), scale = 1.1):
-    try:
-        with open('./conf/decoupe.txt', 'rb') as f:
-            decoupe = pickle.load(f)
-    except:
-        pickle.dump(decoupe, open("./conf/decoupe.txt", "wb"))
+def read_param(parametres={"decoupe":10,"seuil":10,"winStride":4,"padding":4,"scale":1.1}):
 
     try:
-        with open('./conf/seuil_diff.txt', 'rb') as f:
-            seuil_diff = pickle.load(f)
+        with open('./conf/param.txt', 'rb') as f:
+            parametres = pickle.load(f)
     except:
-        pickle.dump(seuil_diff, open("./conf/seuil_diff.txt", "wb"))
+        pickle.dump(parametres, open("./conf/param.txt", "wb"))
 
-    try:
-        with open('./conf/winStride.txt', 'rb') as f:
-            winStride = pickle.load(f)
-    except:
-        pickle.dump(winStride, open("./conf/winStride.txt", "wb"))
-
-    try:
-        with open('./conf/padding.txt', 'rb') as f:
-            padding = pickle.load(f)
-    except:
-        pickle.dump(padding, open("./conf/padding.txt", "wb"))
-
-    try:
-        with open('./conf/scale.txt', 'rb') as f:
-            scale = pickle.load(f)
-    except:
-        pickle.dump(scale, open("./conf/scale.txt", "wb"))
-
-
-
-    return decoupe, seuil_diff, winStride, padding, scale
+    return parametres
 
 
