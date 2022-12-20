@@ -164,7 +164,6 @@ def detectionHOG(frame, ws=8, p=3, s=1.21):
     winStride = (ws, ws)
     padding = (p, p)
     scale = s
-    logging.debug("{} {} {}".format(winStride,padding,scale))
 
     (humans, _) = hog.detectMultiScale(gray,winStride=winStride,padding=padding,scale=scale)
 
