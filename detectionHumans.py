@@ -47,8 +47,8 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
 
     t=time.time()  # compteur de trames
     parametres=read_param()
+    logging.info("Param:"+str(parametres))
 
-    logging.debug(parametres)
     while True:
 
         """ DECLENCHEMENT  SCAN videos """
@@ -63,8 +63,8 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
             record = is_record()  # répérer variable record on/off
 
             if record == "on":  # Enregistrement de l'image
-                blocs = diff_frame(frame1, frame2,visu=visu, name=name, decoupe=in(parametres['decoupe']),seuil=int(parametres['seuil']))  # Comparaison avec image précédente (nb de bloc différents)
-                frame, humains = detectionHOG(frame,winStride=int(parametres['winStride']),padding=int(parametres['padding']),scale=float(parametres['scale']))  # detection HOG
+                blocs = diff_frame(frame1, frame2,visu=visu, name=name, decoupe=int(parametres['decoupe']),seuil=int(parametres['seuil']))  # Comparaison avec image précédente (nb de bloc différents)
+                frame, humains = detectionHOG(frame,ws=int(parametres['winStride']),p=int(parametres['padding']),s=float(parametres['scale']))  # detection HOG
                 frame, visages = detection_face_HAAS(frame)  # detection HAAS Face
                 t = time.time()
 
@@ -265,6 +265,7 @@ def read_param(parametres={"decoupe":10,"seuil":10,"winStride":4,"padding":4,"sc
             parametres = pickle.load(f)
     except:
         pickle.dump(parametres, open("./conf/param.txt", "wb"))
+        logging.warning("pas de fichier param.txt , création par défaut")
 
     return parametres
 
