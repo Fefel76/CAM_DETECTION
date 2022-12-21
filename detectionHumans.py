@@ -73,7 +73,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
                 if (humains+visages)>0 and blocs>seuil: #Détection identifiée
                     print(time.strftime("%d/%m/%y %H:%M:%S"), 'Détections HVB', humains, visages, blocs)
                     photo(frame=frame, name=name)  # sauvegarde sur disque de la photo
-                    photo(frame=diff, name=name)
+                    photo(frame=diff, name=name+diff)
                     # Traçage dans un excel l'heure et la date
                     a = pd.DataFrame({"Nom": [name], "ID": [time.time()], "Time": [time.strftime("%d/%m/%y %H:%M:%S")],"Humains": [humains], "Visages": [visages], "Blocs":blocs})
                     a.to_csv('./videos/alertes_'+name+'.csv', mode='a', index=False, header=False, encoding='utf-8')
