@@ -64,7 +64,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
 
             if record == "on":  # Enregistrement de l'image
                 parametres = read_param()
-                blocs = diff_frame(frame1, frame2,visu=visu, name=name, decoupe=int(parametres['decoupe']),seuil=int(parametres['seuil']))  # Comparaison avec image précédente (nb de bloc différents)
+                blocs, diff = diff_frame(frame1, frame2,visu=visu, name=name, decoupe=int(parametres['decoupe']),seuil=int(parametres['seuil']))  # Comparaison avec image précédente (nb de bloc différents)
                 frame, humains = detectionHOG(frame,ws=int(parametres['winStride']),p=int(parametres['padding']),s=float(parametres['scale']))  # detection HOG
                 frame, visages = detection_face_HAAS(frame)  # detection HAAS Face
                 t = time.time()
@@ -73,6 +73,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
                 if (humains+visages)>0 and blocs>seuil: #Détection identifiée
                     print(time.strftime("%d/%m/%y %H:%M:%S"), 'Détections HVB', humains, visages, blocs)
                     photo(frame=frame, name=name)  # sauvegarde sur disque de la photo
+                    photo(frame=diff, name=name)
                     # Traçage dans un excel l'heure et la date
                     a = pd.DataFrame({"Nom": [name], "ID": [time.time()], "Time": [time.strftime("%d/%m/%y %H:%M:%S")],"Humains": [humains], "Visages": [visages], "Blocs":blocs})
                     a.to_csv('./videos/alertes_'+name+'.csv', mode='a', index=False, header=False, encoding='utf-8')
@@ -239,7 +240,7 @@ def diff_frame(frame1,frame2,decoupe=10, seuil=10, visu="off", name="cam"):
             if s[j].mean()>seuil:
                 c+=1
 
-    return c
+    return c, dilated
 
 
 def read_frame(cap,name):
