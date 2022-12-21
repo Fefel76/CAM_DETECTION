@@ -27,28 +27,18 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
     """
 
 
-    os.environ['OPENCV_FFMPEG_CAPTURE_OPTIONS'] = 'rtsp_transport;udp'
-    logging.info("Début détection sur la caméra: "+name)
-    if src != 0:
-        cap = cv2.VideoCapture(src, cv2.CAP_FFMPEG)
-    else:
-        cap= cv2.VideoCapture(0)
+    # initialisation des paramètres de détection
 
-    if not cap.isOpened():
-        logging.error("Erreur ouverture camera")
-        exit()
-
-
-    print('Images par secondes :', cap.get(cv2.CAP_PROP_FPS) , 'FPS par défaut versus', str(fps),  "FPS configuré")
-
-    width= cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-    height=cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-    print("Taille (W,H): ",width,height)
-
-    t=time.time()  # compteur de trames
     parametres = read_param()
     logging.info("Param:"+str(parametres))
 
+    if parametres["HD"]=="on":
+    # flux HD (remplace 2 par 1 du dernier caractere)
+        src = src[:-1] + "1"
+
+    # initialisation de la caméra
+    cap, width, height = init_CAM(src=src, fps=fps, name=name)
+    t = time.time()  # compteur de trames
     while True:
 
         """ DECLENCHEMENT  SCAN videos """
@@ -88,6 +78,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
         if cv2.waitKey(int(1000 / fps)) == ord('q'):
             break
     # Fin de la boucle infinie ==> libération des ressources CV
+
     cap.release()
     cv2.destroyAllWindows()
 
@@ -264,7 +255,7 @@ def read_frame(cap,name):
 
     return frame
 
-def read_param(parametres={"decoupe":10,"seuil":10,"winStride":4,"padding":4,"scale":1.1,"min_blocs":5}):
+def read_param(parametres={"HD":"on","decoupe":10,"seuil":10,"winStride":4,"padding":4,"scale":1.1,"min_blocs":5}):
     """
     lecture des param généraux pour la détection
     :param parametres: dictionnaire pour découpage blocs et classifier HOG
@@ -279,4 +270,21 @@ def read_param(parametres={"decoupe":10,"seuil":10,"winStride":4,"padding":4,"sc
 
     return parametres
 
+def init_CAM(src,name,fps):
+    os.environ['OPENCV_FFMPEG_CAPTURE_OPTIONS'] = 'rtsp_transport;udp'
+    logging.info("Début détection sur la caméra: " + name)
+    if src != 0:
+        cap = cv2.VideoCapture(src, cv2.CAP_FFMPEG)
+    else:
+        cap = cv2.VideoCapture(0)
 
+    if not cap.isOpened():
+        logging.error("Erreur ouverture camera")
+        exit()
+    print('Images par secondes :', cap.get(cv2.CAP_PROP_FPS), 'FPS par défaut versus', str(fps), "FPS configuré")
+
+    width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    print("Taille (W,H): ", width, height)
+
+    return cap, width, height

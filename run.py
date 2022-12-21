@@ -12,7 +12,7 @@ def init_config():
     visu = "off"
     record = "on"
     fps = 45
-    file= "camHD.conf"
+    file= "cam.conf"
     lire = open(file, 'r')
     contenu = lire.read()
     d = ast.literal_eval(contenu) # conversion en dictionnaire
