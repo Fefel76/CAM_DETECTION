@@ -13,7 +13,7 @@ from ComSMS import *
 logging.basicConfig(filename='./log/detectionHumans.log',level=logging.DEBUG,format='%(asctime)s -- %(funcName)s -- %(process)d -- %(levelname)s -- %(message)s')
 
 
-def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record="on", freq_delay=0.3, seuil=5):
+def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record="on", freq_delay=0.3):
     """
     Scrute un flux vidéo pour réaliser une détection , enregistrer et visualiser
     :param src: 0 par défaut pour la webcam sinon adresse rstp://login:mdp@IP
@@ -70,7 +70,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
                 t = time.time()
 
                 """ DECLENCHEMENT  ALERTE """
-                if (humains+visages)>0 and blocs>seuil: #Détection identifiée
+                if (humains+visages)>0 and blocs>int(parametres['min_blocs']): #Détection identifiée
                     print(time.strftime("%d/%m/%y %H:%M:%S"), 'Détections HVB', humains, visages, blocs)
                     photo(frame=frame, name=name)  # sauvegarde sur disque de la photo
                     photo(frame=diff, name=name+str(blocs))
@@ -264,7 +264,7 @@ def read_frame(cap,name):
 
     return frame
 
-def read_param(parametres={"decoupe":10,"seuil":10,"winStride":4,"padding":4,"scale":1.1}):
+def read_param(parametres={"decoupe":10,"seuil":10,"winStride":4,"padding":4,"scale":1.1,"min_blocs":5}):
     """
     lecture des param généraux pour la détection
     :param parametres: dictionnaire pour découpage blocs et classifier HOG
