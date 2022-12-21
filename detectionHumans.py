@@ -32,7 +32,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
     parametres = read_param()
     logging.info("Param:"+str(parametres))
 
-    if parametres["HD"]=="on":
+    if parametres["HD"]=="on" and src!=0:
     # flux HD (remplace 2 par 1 du dernier caractere)
         src = src[:-1] + "1"
 
@@ -50,7 +50,7 @@ def scanCAM(src=0, name='CAM', width=320, height=240, fps=45, visu="off", record
         """ DECLENCHEMENT  DETECTION """
         # régulation des détections tous les freq_delay
         if time.time()-t>freq_delay:
-            record = is_record()  # répérer variable record on/off
+            record = is_record(name=name)  # répérer variable record on/off
 
             if record == "on":  # Enregistrement de l'image
                 parametres = read_param()
@@ -199,15 +199,15 @@ def detection_body_HAAS(frame):
 
 """
 #TODO gestion multi record
-def is_record(record="on"):
-
+def is_record(record="on", name='CAM'):
+    records={}
     try:
         with open('./conf/record.txt', 'rb') as f:
-            record = pickle.load(f)
+            records = pickle.load(f)
     except:
         pickle.dump(record, open("./videos/record.txt", "wb"))  # activation record
 
-    return record
+    return records[name]
 
 def diff_frame(frame1,frame2,decoupe=10, seuil=10, visu="off", name="cam"):
     c=0

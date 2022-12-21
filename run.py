@@ -5,10 +5,12 @@ import configparser
 import ast
 import pickle
 
+names=('CAM','salon','garage','piscine')
+
 def init_config():
     config=configparser.ConfigParser()
     url = 0  # par défaut , canal 0 de la webcam
-    name = 'CAM'
+    name = names[0]
     visu = "off"
     record = "on"
     fps = 45
@@ -33,12 +35,19 @@ def init_config():
 
     return url, name, visu, fps, record
 
-    # Press the green button in the gutter to run the script.
+def init_records(names,record):
+    records={}
+    for n in names:
+        records[n]=record
+    return records
+
+
 if __name__ == '__main__':
     #TODO utilisation de click pour gérer les arguments et options
     src, name, visu, fps, record= init_config()
-    #TODO gestion multi record
-    pickle.dump(record, open("./conf/record.txt", "wb"))  # activation record
+
+    records=init_records(names=names, record=record)
+    pickle.dump(records, open("./conf/record.txt", "wb"))  # activation record
     scanCAM(src=src, name=name, visu=visu, fps=fps, record=record)
 
 
