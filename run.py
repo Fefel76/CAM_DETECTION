@@ -5,12 +5,13 @@ import configparser
 import ast
 import pickle
 
-names=('CAM','salon','garage','piscine')
+# TODO dictionnaire de dictionnaire pour ajouter des caméras dans conf via IHM
+names=('salon','garage','piscine')
 
 def init_config():
     config=configparser.ConfigParser()
     url = 0  # par défaut , canal 0 de la webcam
-    name = names[0]
+    name = 'CAM'
     visu = "off"
     record = "on"
     fps = 45
