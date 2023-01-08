@@ -20,14 +20,16 @@ src, name, visu, fps, record= init_config()
 
 
 for t in range(boucle):
+    t=time.time()
     cap, width, height = init_CAM(src=src, fps=fps, name=name)
-    frame = read_frame(cap, name)
-    photo(frame=frame, name=name)
-    for i in range(int(fps)):  #lecture de 15 frames sans photo
-        frame = read_frame(cap, name)
-    frame = read_frame(cap, name)
-    photo(frame=frame, name=name)
+    for i in range(rafale):
+        for i in range(int(fps/2)):  #lecture de 15 frames sans photo
+            frame = read_frame(cap, name)
+        photo(frame=frame, name=name)
+
+
     cap.release()
+    print(time.time()-t)
     time.sleep(delai)
 
 
